@@ -12,10 +12,10 @@
 #include <Zend/zend_interfaces.h>
 
 #include "kernel/main.h"
+#include "kernel/array.h"
+#include "kernel/memory.h"
 #include "kernel/object.h"
 #include "kernel/fcall.h"
-#include "kernel/memory.h"
-#include "kernel/array.h"
 #include "kernel/operators.h"
 #include "kernel/string.h"
 
@@ -46,34 +46,38 @@ PHP_METHOD(SePHP_Common_Rsa, __construct) {
 
 	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
 	zend_long ZEPHIR_LAST_CALL_STATUS;
-	zval *pubKey, pubKey_sub, *priKey = NULL, priKey_sub, __$null, pubId, _0, _1, _2;
+	zval *keyArr, keyArr_sub, pubKey, priKey, pubId, _0, _1, _2;
 	zval *this_ptr = getThis();
 
-	ZVAL_UNDEF(&pubKey_sub);
-	ZVAL_UNDEF(&priKey_sub);
-	ZVAL_NULL(&__$null);
+	ZVAL_UNDEF(&keyArr_sub);
+	ZVAL_UNDEF(&pubKey);
+	ZVAL_UNDEF(&priKey);
 	ZVAL_UNDEF(&pubId);
 	ZVAL_UNDEF(&_0);
 	ZVAL_UNDEF(&_1);
 	ZVAL_UNDEF(&_2);
 
 	ZEPHIR_MM_GROW();
-	zephir_fetch_params(1, 1, 1, &pubKey, &priKey);
+	zephir_fetch_params(1, 1, 0, &keyArr);
 
-	if (!priKey) {
-		priKey = &priKey_sub;
-		priKey = &__$null;
+
+
+	if (zephir_array_isset_string(keyArr, SL("public_key"))) {
+		ZEPHIR_OBS_VAR(&pubKey);
+		zephir_array_fetch_string(&pubKey, keyArr, SL("public_key"), PH_NOISY, "sephp/common/Rsa.zep", 18);
 	}
-
-
-	zephir_update_property_zval(this_ptr, SL("publicKey"), pubKey);
-	zephir_update_property_zval(this_ptr, SL("privateKey"), priKey);
+	if (zephir_array_isset_string(keyArr, SL("private_key"))) {
+		ZEPHIR_OBS_VAR(&priKey);
+		zephir_array_fetch_string(&priKey, keyArr, SL("private_key"), PH_NOISY, "sephp/common/Rsa.zep", 21);
+	}
+	zephir_update_property_zval(this_ptr, SL("publicKey"), &pubKey);
+	zephir_update_property_zval(this_ptr, SL("privateKey"), &priKey);
 	zephir_read_property(&_0, this_ptr, SL("publicKey"), PH_NOISY_CC | PH_READONLY);
 	ZEPHIR_CALL_FUNCTION(&pubId, "openssl_get_publickey", NULL, 13, &_0);
 	zephir_check_call_status();
 	ZEPHIR_CALL_FUNCTION(&_1, "openssl_pkey_get_details", NULL, 14, &pubId);
 	zephir_check_call_status();
-	zephir_array_fetch_string(&_2, &_1, SL("bits"), PH_NOISY | PH_READONLY, "sephp/common/Rsa.zep", 20);
+	zephir_array_fetch_string(&_2, &_1, SL("bits"), PH_NOISY | PH_READONLY, "sephp/common/Rsa.zep", 27);
 	zephir_update_property_zval(this_ptr, SL("keyLen"), &_2);
 	ZEPHIR_MM_RESTORE();
 
@@ -121,7 +125,7 @@ PHP_METHOD(SePHP_Common_Rsa, createKeys) {
 	ZEPHIR_CALL_FUNCTION(&publicKeyDetail, "openssl_pkey_get_details", NULL, 14, &res);
 	zephir_check_call_status();
 	ZEPHIR_OBS_VAR(&publicKey);
-	zephir_array_fetch_string(&publicKey, &publicKeyDetail, SL("key"), PH_NOISY, "sephp/common/Rsa.zep", 33);
+	zephir_array_fetch_string(&publicKey, &publicKeyDetail, SL("key"), PH_NOISY, "sephp/common/Rsa.zep", 40);
 	zephir_create_array(return_value, 2, 0);
 	zephir_array_update_string(return_value, SL("public_key"), &publicKey, PH_COPY | PH_SEPARATE);
 	zephir_array_update_string(return_value, SL("private_key"), &privateKey, PH_COPY | PH_SEPARATE);
@@ -169,7 +173,7 @@ PHP_METHOD(SePHP_Common_Rsa, publicEncrypt) {
 	ZVAL_STRING(&part, "");
 	ZEPHIR_INIT_VAR(&_key);
 	ZVAL_STRING(&_key, "");
-	zephir_is_iterable(&parts, 0, "sephp/common/Rsa.zep", 55);
+	zephir_is_iterable(&parts, 0, "sephp/common/Rsa.zep", 62);
 	if (Z_TYPE_P(&parts) == IS_ARRAY) {
 		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(&parts), _4, _5, _2)
 		{
@@ -262,7 +266,7 @@ PHP_METHOD(SePHP_Common_Rsa, privateDecrypt) {
 	ZVAL_LONG(&_1, partLen);
 	ZEPHIR_CALL_FUNCTION(&parts, "str_split", NULL, 17, &base64Decoded, &_1);
 	zephir_check_call_status();
-	zephir_is_iterable(&parts, 0, "sephp/common/Rsa.zep", 74);
+	zephir_is_iterable(&parts, 0, "sephp/common/Rsa.zep", 81);
 	if (Z_TYPE_P(&parts) == IS_ARRAY) {
 		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(&parts), _4, _5, _2)
 		{
@@ -348,7 +352,7 @@ PHP_METHOD(SePHP_Common_Rsa, privateEncrypt) {
 	ZVAL_LONG(&_1, partLen);
 	ZEPHIR_CALL_FUNCTION(&parts, "str_split", NULL, 17, data, &_1);
 	zephir_check_call_status();
-	zephir_is_iterable(&parts, 0, "sephp/common/Rsa.zep", 93);
+	zephir_is_iterable(&parts, 0, "sephp/common/Rsa.zep", 100);
 	if (Z_TYPE_P(&parts) == IS_ARRAY) {
 		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(&parts), _4, _5, _2)
 		{
@@ -441,7 +445,7 @@ PHP_METHOD(SePHP_Common_Rsa, publicDecrypt) {
 	ZVAL_LONG(&_1, partLen);
 	ZEPHIR_CALL_FUNCTION(&parts, "str_split", NULL, 17, &base64Decoded, &_1);
 	zephir_check_call_status();
-	zephir_is_iterable(&parts, 0, "sephp/common/Rsa.zep", 112);
+	zephir_is_iterable(&parts, 0, "sephp/common/Rsa.zep", 119);
 	if (Z_TYPE_P(&parts) == IS_ARRAY) {
 		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(&parts), _4, _5, _2)
 		{

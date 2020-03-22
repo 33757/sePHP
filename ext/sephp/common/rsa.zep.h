@@ -15,8 +15,7 @@ PHP_METHOD(SePHP_Common_Rsa, url_safe_base64_encode);
 PHP_METHOD(SePHP_Common_Rsa, url_safe_base64_decode);
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_sephp_common_rsa___construct, 0, 0, 1)
-	ZEND_ARG_INFO(0, pubKey)
-	ZEND_ARG_INFO(0, priKey)
+	ZEND_ARG_INFO(0, keyArr)
 ZEND_END_ARG_INFO()
 
 #if PHP_VERSION_ID >= 70200

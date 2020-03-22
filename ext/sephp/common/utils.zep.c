@@ -61,12 +61,12 @@ PHP_METHOD(SePHP_Common_Utils, payEncrypt) {
 	ZEPHIR_INIT_VAR(&aesKey);
 	ZVAL_STRING(&aesKey, "");
 	ZEPHIR_INIT_VAR(&_0);
-	ZVAL_STRING(&_0, "TME_CRYPT_KEY");
+	ZVAL_STRING(&_0, "SE_CRYPT_KEY");
 	ZEPHIR_CALL_FUNCTION(&_1, "defined", &_2, 1, &_0);
 	zephir_check_call_status();
 	if (zephir_is_true(&_1)) {
 		ZEPHIR_INIT_NVAR(&aesKey);
-		ZEPHIR_GET_CONSTANT(&aesKey, "TME_CRYPT_KEY");
+		ZEPHIR_GET_CONSTANT(&aesKey, "SE_CRYPT_KEY");
 	} else {
 		ZEPHIR_OBS_VAR(&_3$$4);
 		zephir_read_static_property_ce(&_3$$4, sephp_common_utils_ce, SL("aesKey"), PH_NOISY_CC);
@@ -75,12 +75,12 @@ PHP_METHOD(SePHP_Common_Utils, payEncrypt) {
 	ZEPHIR_INIT_VAR(&aesIv);
 	ZVAL_STRING(&aesIv, "");
 	ZEPHIR_INIT_NVAR(&_0);
-	ZVAL_STRING(&_0, "TME_CRYPT_IV");
+	ZVAL_STRING(&_0, "SE_CRYPT_IV");
 	ZEPHIR_CALL_FUNCTION(&_4, "defined", &_2, 1, &_0);
 	zephir_check_call_status();
 	if (zephir_is_true(&_4)) {
 		ZEPHIR_INIT_NVAR(&aesIv);
-		ZEPHIR_GET_CONSTANT(&aesIv, "TME_CRYPT_IV");
+		ZEPHIR_GET_CONSTANT(&aesIv, "SE_CRYPT_IV");
 	} else {
 		ZEPHIR_OBS_VAR(&_5$$6);
 		zephir_read_static_property_ce(&_5$$6, sephp_common_utils_ce, SL("aesIv"), PH_NOISY_CC);
@@ -124,7 +124,7 @@ PHP_METHOD(SePHP_Common_Utils, payDecrypt) {
 	ZEPHIR_INIT_VAR(&aesKey);
 	ZVAL_STRING(&aesKey, "");
 	ZEPHIR_INIT_VAR(&_0);
-	ZVAL_STRING(&_0, "TME_CRYPT_KEY");
+	ZVAL_STRING(&_0, "SE_CRYPT_KEY");
 	ZEPHIR_CALL_FUNCTION(&_1, "defined", &_2, 1, &_0);
 	zephir_check_call_status();
 	if (zephir_is_true(&_1)) {
@@ -138,12 +138,12 @@ PHP_METHOD(SePHP_Common_Utils, payDecrypt) {
 	ZEPHIR_INIT_VAR(&aesIv);
 	ZVAL_STRING(&aesIv, "");
 	ZEPHIR_INIT_NVAR(&_0);
-	ZVAL_STRING(&_0, "TME_CRYPT_IV");
+	ZVAL_STRING(&_0, "SE_CRYPT_IV");
 	ZEPHIR_CALL_FUNCTION(&_4, "defined", &_2, 1, &_0);
 	zephir_check_call_status();
 	if (zephir_is_true(&_4)) {
 		ZEPHIR_INIT_NVAR(&aesIv);
-		ZEPHIR_GET_CONSTANT(&aesIv, "TME_CRYPT_IV");
+		ZEPHIR_GET_CONSTANT(&aesIv, "SE_CRYPT_IV");
 	} else {
 		ZEPHIR_OBS_VAR(&_5$$6);
 		zephir_read_static_property_ce(&_5$$6, sephp_common_utils_ce, SL("aesIv"), PH_NOISY_CC);
@@ -156,6 +156,656 @@ PHP_METHOD(SePHP_Common_Utils, payDecrypt) {
 	ZVAL_LONG(&_7, 1);
 	ZEPHIR_RETURN_CALL_FUNCTION("openssl_decrypt", NULL, 27, &_6, &_0, &aesKey, &_7, &aesIv);
 	zephir_check_call_status();
+	RETURN_MM();
+
+}
+
+PHP_METHOD(SePHP_Common_Utils, privateKeyEncryption) {
+
+	zend_string *_7;
+	zend_ulong _6;
+	zend_bool _0, _1, _2, _3, _8$$4, _9$$4, _12$$6, _13$$6;
+	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
+	zephir_fcall_cache_entry *_11 = NULL;
+	zend_long ZEPHIR_LAST_CALL_STATUS;
+	zval *data, data_sub, *keyArray, keyArray_sub, *map, map_sub, rsa, key, value, *_4, _5, _10$$5, _14$$7;
+	zval *this_ptr = getThis();
+
+	ZVAL_UNDEF(&data_sub);
+	ZVAL_UNDEF(&keyArray_sub);
+	ZVAL_UNDEF(&map_sub);
+	ZVAL_UNDEF(&rsa);
+	ZVAL_UNDEF(&key);
+	ZVAL_UNDEF(&value);
+	ZVAL_UNDEF(&_5);
+	ZVAL_UNDEF(&_10$$5);
+	ZVAL_UNDEF(&_14$$7);
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 3, 0, &data, &keyArray, &map);
+
+	ZEPHIR_SEPARATE_PARAM(data);
+
+
+	_0 = !(Z_TYPE_P(data) == IS_ARRAY);
+	if (!(_0)) {
+		_0 = ZEPHIR_IS_EMPTY(data);
+	}
+	_1 = _0;
+	if (!(_1)) {
+		_1 = !(Z_TYPE_P(keyArray) == IS_ARRAY);
+	}
+	_2 = _1;
+	if (!(_2)) {
+		_2 = ZEPHIR_IS_EMPTY(keyArray);
+	}
+	_3 = _2;
+	if (!(_3)) {
+		_3 = !(Z_TYPE_P(map) == IS_ARRAY);
+	}
+	if (_3) {
+		RETVAL_ZVAL(data, 1, 0);
+		RETURN_MM();
+	}
+	ZEPHIR_INIT_VAR(&rsa);
+	object_init_ex(&rsa, sephp_common_rsa_ce);
+	ZEPHIR_CALL_METHOD(NULL, &rsa, "__construct", NULL, 28, keyArray);
+	zephir_check_call_status();
+	zephir_is_iterable(data, 1, "sephp/common/Utils.zep", 57);
+	if (Z_TYPE_P(data) == IS_ARRAY) {
+		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), _6, _7, _4)
+		{
+			ZEPHIR_INIT_NVAR(&key);
+			if (_7 != NULL) { 
+				ZVAL_STR_COPY(&key, _7);
+			} else {
+				ZVAL_LONG(&key, _6);
+			}
+			ZEPHIR_INIT_NVAR(&value);
+			ZVAL_COPY(&value, _4);
+			_8$$4 = zephir_fast_in_array(&key, map);
+			if (_8$$4) {
+				_8$$4 = !ZEPHIR_IS_STRING(&value, "");
+			}
+			_9$$4 = _8$$4;
+			if (_9$$4) {
+				_9$$4 = !(ZEPHIR_IS_EMPTY(&value));
+			}
+			if (_9$$4) {
+				ZEPHIR_CALL_METHOD(&_10$$5, &rsa, "privateencrypt", &_11, 29, &value);
+				zephir_check_call_status();
+				zephir_array_update_zval(data, &key, &_10$$5, PH_COPY | PH_SEPARATE);
+			}
+		} ZEND_HASH_FOREACH_END();
+	} else {
+		ZEPHIR_CALL_METHOD(NULL, data, "rewind", NULL, 0);
+		zephir_check_call_status();
+		while (1) {
+			ZEPHIR_CALL_METHOD(&_5, data, "valid", NULL, 0);
+			zephir_check_call_status();
+			if (!zend_is_true(&_5)) {
+				break;
+			}
+			ZEPHIR_CALL_METHOD(&key, data, "key", NULL, 0);
+			zephir_check_call_status();
+			ZEPHIR_CALL_METHOD(&value, data, "current", NULL, 0);
+			zephir_check_call_status();
+				_12$$6 = zephir_fast_in_array(&key, map);
+				if (_12$$6) {
+					_12$$6 = !ZEPHIR_IS_STRING(&value, "");
+				}
+				_13$$6 = _12$$6;
+				if (_13$$6) {
+					_13$$6 = !(ZEPHIR_IS_EMPTY(&value));
+				}
+				if (_13$$6) {
+					ZEPHIR_CALL_METHOD(&_14$$7, &rsa, "privateencrypt", &_11, 29, &value);
+					zephir_check_call_status();
+					zephir_array_update_zval(data, &key, &_14$$7, PH_COPY | PH_SEPARATE);
+				}
+			ZEPHIR_CALL_METHOD(NULL, data, "next", NULL, 0);
+			zephir_check_call_status();
+		}
+	}
+	ZEPHIR_INIT_NVAR(&value);
+	ZEPHIR_INIT_NVAR(&key);
+	RETVAL_ZVAL(data, 1, 0);
+	RETURN_MM();
+
+}
+
+PHP_METHOD(SePHP_Common_Utils, privateKeyDecryption) {
+
+	zend_string *_7;
+	zend_ulong _6;
+	zend_bool _0, _1, _2, _3, _8$$4, _9$$4, _12$$6, _13$$6;
+	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
+	zephir_fcall_cache_entry *_11 = NULL;
+	zend_long ZEPHIR_LAST_CALL_STATUS;
+	zval *data, data_sub, *keyArray, keyArray_sub, *map, map_sub, rsa, key, value, *_4, _5, _10$$5, _14$$7;
+	zval *this_ptr = getThis();
+
+	ZVAL_UNDEF(&data_sub);
+	ZVAL_UNDEF(&keyArray_sub);
+	ZVAL_UNDEF(&map_sub);
+	ZVAL_UNDEF(&rsa);
+	ZVAL_UNDEF(&key);
+	ZVAL_UNDEF(&value);
+	ZVAL_UNDEF(&_5);
+	ZVAL_UNDEF(&_10$$5);
+	ZVAL_UNDEF(&_14$$7);
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 3, 0, &data, &keyArray, &map);
+
+	ZEPHIR_SEPARATE_PARAM(data);
+
+
+	_0 = !(Z_TYPE_P(data) == IS_ARRAY);
+	if (!(_0)) {
+		_0 = ZEPHIR_IS_EMPTY(data);
+	}
+	_1 = _0;
+	if (!(_1)) {
+		_1 = !(Z_TYPE_P(keyArray) == IS_ARRAY);
+	}
+	_2 = _1;
+	if (!(_2)) {
+		_2 = ZEPHIR_IS_EMPTY(keyArray);
+	}
+	_3 = _2;
+	if (!(_3)) {
+		_3 = !(Z_TYPE_P(map) == IS_ARRAY);
+	}
+	if (_3) {
+		RETVAL_ZVAL(data, 1, 0);
+		RETURN_MM();
+	}
+	ZEPHIR_INIT_VAR(&rsa);
+	object_init_ex(&rsa, sephp_common_rsa_ce);
+	ZEPHIR_CALL_METHOD(NULL, &rsa, "__construct", NULL, 28, keyArray);
+	zephir_check_call_status();
+	zephir_is_iterable(data, 1, "sephp/common/Utils.zep", 74);
+	if (Z_TYPE_P(data) == IS_ARRAY) {
+		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), _6, _7, _4)
+		{
+			ZEPHIR_INIT_NVAR(&key);
+			if (_7 != NULL) { 
+				ZVAL_STR_COPY(&key, _7);
+			} else {
+				ZVAL_LONG(&key, _6);
+			}
+			ZEPHIR_INIT_NVAR(&value);
+			ZVAL_COPY(&value, _4);
+			_8$$4 = zephir_fast_in_array(&key, map);
+			if (_8$$4) {
+				_8$$4 = !ZEPHIR_IS_STRING(&value, "");
+			}
+			_9$$4 = _8$$4;
+			if (_9$$4) {
+				_9$$4 = !(ZEPHIR_IS_EMPTY(&value));
+			}
+			if (_9$$4) {
+				ZEPHIR_CALL_METHOD(&_10$$5, &rsa, "privatedecrypt", &_11, 30, &value);
+				zephir_check_call_status();
+				zephir_array_update_zval(data, &key, &_10$$5, PH_COPY | PH_SEPARATE);
+			}
+		} ZEND_HASH_FOREACH_END();
+	} else {
+		ZEPHIR_CALL_METHOD(NULL, data, "rewind", NULL, 0);
+		zephir_check_call_status();
+		while (1) {
+			ZEPHIR_CALL_METHOD(&_5, data, "valid", NULL, 0);
+			zephir_check_call_status();
+			if (!zend_is_true(&_5)) {
+				break;
+			}
+			ZEPHIR_CALL_METHOD(&key, data, "key", NULL, 0);
+			zephir_check_call_status();
+			ZEPHIR_CALL_METHOD(&value, data, "current", NULL, 0);
+			zephir_check_call_status();
+				_12$$6 = zephir_fast_in_array(&key, map);
+				if (_12$$6) {
+					_12$$6 = !ZEPHIR_IS_STRING(&value, "");
+				}
+				_13$$6 = _12$$6;
+				if (_13$$6) {
+					_13$$6 = !(ZEPHIR_IS_EMPTY(&value));
+				}
+				if (_13$$6) {
+					ZEPHIR_CALL_METHOD(&_14$$7, &rsa, "privatedecrypt", &_11, 30, &value);
+					zephir_check_call_status();
+					zephir_array_update_zval(data, &key, &_14$$7, PH_COPY | PH_SEPARATE);
+				}
+			ZEPHIR_CALL_METHOD(NULL, data, "next", NULL, 0);
+			zephir_check_call_status();
+		}
+	}
+	ZEPHIR_INIT_NVAR(&value);
+	ZEPHIR_INIT_NVAR(&key);
+	RETVAL_ZVAL(data, 1, 0);
+	RETURN_MM();
+
+}
+
+PHP_METHOD(SePHP_Common_Utils, publicKeyEncryption) {
+
+	zend_string *_7;
+	zend_ulong _6;
+	zend_bool _0, _1, _2, _3, _8$$4, _9$$4, _12$$6, _13$$6;
+	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
+	zephir_fcall_cache_entry *_11 = NULL;
+	zend_long ZEPHIR_LAST_CALL_STATUS;
+	zval *data, data_sub, *keyArray, keyArray_sub, *map, map_sub, rsa, key, value, *_4, _5, _10$$5, _14$$7;
+	zval *this_ptr = getThis();
+
+	ZVAL_UNDEF(&data_sub);
+	ZVAL_UNDEF(&keyArray_sub);
+	ZVAL_UNDEF(&map_sub);
+	ZVAL_UNDEF(&rsa);
+	ZVAL_UNDEF(&key);
+	ZVAL_UNDEF(&value);
+	ZVAL_UNDEF(&_5);
+	ZVAL_UNDEF(&_10$$5);
+	ZVAL_UNDEF(&_14$$7);
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 3, 0, &data, &keyArray, &map);
+
+	ZEPHIR_SEPARATE_PARAM(data);
+
+
+	_0 = !(Z_TYPE_P(data) == IS_ARRAY);
+	if (!(_0)) {
+		_0 = ZEPHIR_IS_EMPTY(data);
+	}
+	_1 = _0;
+	if (!(_1)) {
+		_1 = !(Z_TYPE_P(keyArray) == IS_ARRAY);
+	}
+	_2 = _1;
+	if (!(_2)) {
+		_2 = ZEPHIR_IS_EMPTY(keyArray);
+	}
+	_3 = _2;
+	if (!(_3)) {
+		_3 = !(Z_TYPE_P(map) == IS_ARRAY);
+	}
+	if (_3) {
+		RETVAL_ZVAL(data, 1, 0);
+		RETURN_MM();
+	}
+	ZEPHIR_INIT_VAR(&rsa);
+	object_init_ex(&rsa, sephp_common_rsa_ce);
+	ZEPHIR_CALL_METHOD(NULL, &rsa, "__construct", NULL, 28, keyArray);
+	zephir_check_call_status();
+	zephir_is_iterable(data, 1, "sephp/common/Utils.zep", 91);
+	if (Z_TYPE_P(data) == IS_ARRAY) {
+		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), _6, _7, _4)
+		{
+			ZEPHIR_INIT_NVAR(&key);
+			if (_7 != NULL) { 
+				ZVAL_STR_COPY(&key, _7);
+			} else {
+				ZVAL_LONG(&key, _6);
+			}
+			ZEPHIR_INIT_NVAR(&value);
+			ZVAL_COPY(&value, _4);
+			_8$$4 = zephir_fast_in_array(&key, map);
+			if (_8$$4) {
+				_8$$4 = !ZEPHIR_IS_STRING(&value, "");
+			}
+			_9$$4 = _8$$4;
+			if (_9$$4) {
+				_9$$4 = !(ZEPHIR_IS_EMPTY(&value));
+			}
+			if (_9$$4) {
+				ZEPHIR_CALL_METHOD(&_10$$5, &rsa, "publicencrypt", &_11, 31, &value);
+				zephir_check_call_status();
+				zephir_array_update_zval(data, &key, &_10$$5, PH_COPY | PH_SEPARATE);
+			}
+		} ZEND_HASH_FOREACH_END();
+	} else {
+		ZEPHIR_CALL_METHOD(NULL, data, "rewind", NULL, 0);
+		zephir_check_call_status();
+		while (1) {
+			ZEPHIR_CALL_METHOD(&_5, data, "valid", NULL, 0);
+			zephir_check_call_status();
+			if (!zend_is_true(&_5)) {
+				break;
+			}
+			ZEPHIR_CALL_METHOD(&key, data, "key", NULL, 0);
+			zephir_check_call_status();
+			ZEPHIR_CALL_METHOD(&value, data, "current", NULL, 0);
+			zephir_check_call_status();
+				_12$$6 = zephir_fast_in_array(&key, map);
+				if (_12$$6) {
+					_12$$6 = !ZEPHIR_IS_STRING(&value, "");
+				}
+				_13$$6 = _12$$6;
+				if (_13$$6) {
+					_13$$6 = !(ZEPHIR_IS_EMPTY(&value));
+				}
+				if (_13$$6) {
+					ZEPHIR_CALL_METHOD(&_14$$7, &rsa, "publicencrypt", &_11, 31, &value);
+					zephir_check_call_status();
+					zephir_array_update_zval(data, &key, &_14$$7, PH_COPY | PH_SEPARATE);
+				}
+			ZEPHIR_CALL_METHOD(NULL, data, "next", NULL, 0);
+			zephir_check_call_status();
+		}
+	}
+	ZEPHIR_INIT_NVAR(&value);
+	ZEPHIR_INIT_NVAR(&key);
+	RETVAL_ZVAL(data, 1, 0);
+	RETURN_MM();
+
+}
+
+PHP_METHOD(SePHP_Common_Utils, publicKeyDecryption) {
+
+	zend_string *_7;
+	zend_ulong _6;
+	zend_bool _0, _1, _2, _3, _8$$4, _9$$4, _12$$6, _13$$6;
+	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
+	zephir_fcall_cache_entry *_11 = NULL;
+	zend_long ZEPHIR_LAST_CALL_STATUS;
+	zval *data, data_sub, *keyArray, keyArray_sub, *map, map_sub, rsa, key, value, *_4, _5, _10$$5, _14$$7;
+	zval *this_ptr = getThis();
+
+	ZVAL_UNDEF(&data_sub);
+	ZVAL_UNDEF(&keyArray_sub);
+	ZVAL_UNDEF(&map_sub);
+	ZVAL_UNDEF(&rsa);
+	ZVAL_UNDEF(&key);
+	ZVAL_UNDEF(&value);
+	ZVAL_UNDEF(&_5);
+	ZVAL_UNDEF(&_10$$5);
+	ZVAL_UNDEF(&_14$$7);
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 3, 0, &data, &keyArray, &map);
+
+	ZEPHIR_SEPARATE_PARAM(data);
+
+
+	_0 = !(Z_TYPE_P(data) == IS_ARRAY);
+	if (!(_0)) {
+		_0 = ZEPHIR_IS_EMPTY(data);
+	}
+	_1 = _0;
+	if (!(_1)) {
+		_1 = !(Z_TYPE_P(keyArray) == IS_ARRAY);
+	}
+	_2 = _1;
+	if (!(_2)) {
+		_2 = ZEPHIR_IS_EMPTY(keyArray);
+	}
+	_3 = _2;
+	if (!(_3)) {
+		_3 = !(Z_TYPE_P(map) == IS_ARRAY);
+	}
+	if (_3) {
+		RETVAL_ZVAL(data, 1, 0);
+		RETURN_MM();
+	}
+	ZEPHIR_INIT_VAR(&rsa);
+	object_init_ex(&rsa, sephp_common_rsa_ce);
+	ZEPHIR_CALL_METHOD(NULL, &rsa, "__construct", NULL, 28, keyArray);
+	zephir_check_call_status();
+	zephir_is_iterable(data, 1, "sephp/common/Utils.zep", 108);
+	if (Z_TYPE_P(data) == IS_ARRAY) {
+		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(data), _6, _7, _4)
+		{
+			ZEPHIR_INIT_NVAR(&key);
+			if (_7 != NULL) { 
+				ZVAL_STR_COPY(&key, _7);
+			} else {
+				ZVAL_LONG(&key, _6);
+			}
+			ZEPHIR_INIT_NVAR(&value);
+			ZVAL_COPY(&value, _4);
+			_8$$4 = zephir_fast_in_array(&key, map);
+			if (_8$$4) {
+				_8$$4 = !ZEPHIR_IS_STRING(&value, "");
+			}
+			_9$$4 = _8$$4;
+			if (_9$$4) {
+				_9$$4 = !(ZEPHIR_IS_EMPTY(&value));
+			}
+			if (_9$$4) {
+				ZEPHIR_CALL_METHOD(&_10$$5, &rsa, "publicdecrypt", &_11, 32, &value);
+				zephir_check_call_status();
+				zephir_array_update_zval(data, &key, &_10$$5, PH_COPY | PH_SEPARATE);
+			}
+		} ZEND_HASH_FOREACH_END();
+	} else {
+		ZEPHIR_CALL_METHOD(NULL, data, "rewind", NULL, 0);
+		zephir_check_call_status();
+		while (1) {
+			ZEPHIR_CALL_METHOD(&_5, data, "valid", NULL, 0);
+			zephir_check_call_status();
+			if (!zend_is_true(&_5)) {
+				break;
+			}
+			ZEPHIR_CALL_METHOD(&key, data, "key", NULL, 0);
+			zephir_check_call_status();
+			ZEPHIR_CALL_METHOD(&value, data, "current", NULL, 0);
+			zephir_check_call_status();
+				_12$$6 = zephir_fast_in_array(&key, map);
+				if (_12$$6) {
+					_12$$6 = !ZEPHIR_IS_STRING(&value, "");
+				}
+				_13$$6 = _12$$6;
+				if (_13$$6) {
+					_13$$6 = !(ZEPHIR_IS_EMPTY(&value));
+				}
+				if (_13$$6) {
+					ZEPHIR_CALL_METHOD(&_14$$7, &rsa, "publicdecrypt", &_11, 32, &value);
+					zephir_check_call_status();
+					zephir_array_update_zval(data, &key, &_14$$7, PH_COPY | PH_SEPARATE);
+				}
+			ZEPHIR_CALL_METHOD(NULL, data, "next", NULL, 0);
+			zephir_check_call_status();
+		}
+	}
+	ZEPHIR_INIT_NVAR(&value);
+	ZEPHIR_INIT_NVAR(&key);
+	RETVAL_ZVAL(data, 1, 0);
+	RETURN_MM();
+
+}
+
+PHP_METHOD(SePHP_Common_Utils, mPrivateKeyEncryption) {
+
+	zend_string *_3$$3;
+	zend_ulong _2$$3;
+	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
+	zephir_fcall_cache_entry *_5 = NULL, *_9 = NULL;
+	zend_long ZEPHIR_LAST_CALL_STATUS;
+	zval *arr, arr_sub, *map, map_sub, *keyArray, keyArray_sub, rsa, key$$3, value$$3, *_0$$3, _1$$3, _4$$5, _6$$5, _7$$6, _8$$6, _10$$8, _11$$8, _12$$9, _13$$9;
+	zval *this_ptr = getThis();
+
+	ZVAL_UNDEF(&arr_sub);
+	ZVAL_UNDEF(&map_sub);
+	ZVAL_UNDEF(&keyArray_sub);
+	ZVAL_UNDEF(&rsa);
+	ZVAL_UNDEF(&key$$3);
+	ZVAL_UNDEF(&value$$3);
+	ZVAL_UNDEF(&_1$$3);
+	ZVAL_UNDEF(&_4$$5);
+	ZVAL_UNDEF(&_6$$5);
+	ZVAL_UNDEF(&_7$$6);
+	ZVAL_UNDEF(&_8$$6);
+	ZVAL_UNDEF(&_10$$8);
+	ZVAL_UNDEF(&_11$$8);
+	ZVAL_UNDEF(&_12$$9);
+	ZVAL_UNDEF(&_13$$9);
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 3, 0, &arr, &map, &keyArray);
+
+	ZEPHIR_SEPARATE_PARAM(arr);
+
+
+	ZEPHIR_INIT_VAR(&rsa);
+	object_init_ex(&rsa, sephp_common_rsa_ce);
+	ZEPHIR_CALL_METHOD(NULL, &rsa, "__construct", NULL, 28, keyArray);
+	zephir_check_call_status();
+	if (Z_TYPE_P(map) == IS_ARRAY) {
+		zephir_is_iterable(map, 0, "sephp/common/Utils.zep", 125);
+		if (Z_TYPE_P(map) == IS_ARRAY) {
+			ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(map), _2$$3, _3$$3, _0$$3)
+			{
+				ZEPHIR_INIT_NVAR(&key$$3);
+				if (_3$$3 != NULL) { 
+					ZVAL_STR_COPY(&key$$3, _3$$3);
+				} else {
+					ZVAL_LONG(&key$$3, _2$$3);
+				}
+				ZEPHIR_INIT_NVAR(&value$$3);
+				ZVAL_COPY(&value$$3, _0$$3);
+				if (Z_TYPE_P(&value$$3) == IS_ARRAY) {
+					zephir_array_fetch(&_6$$5, arr, &key$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 119);
+					ZEPHIR_CALL_SELF(&_4$$5, "mprivatekeyencryption", &_5, 0, &_6$$5, &value$$3, keyArray);
+					zephir_check_call_status();
+					zephir_array_update_zval(arr, &key$$3, &_4$$5, PH_COPY | PH_SEPARATE);
+				} else {
+					zephir_array_fetch(&_8$$6, arr, &value$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 122);
+					ZEPHIR_CALL_METHOD(&_7$$6, &rsa, "privateencrypt", &_9, 29, &_8$$6);
+					zephir_check_call_status();
+					zephir_array_update_zval(arr, &value$$3, &_7$$6, PH_COPY | PH_SEPARATE);
+				}
+			} ZEND_HASH_FOREACH_END();
+		} else {
+			ZEPHIR_CALL_METHOD(NULL, map, "rewind", NULL, 0);
+			zephir_check_call_status();
+			while (1) {
+				ZEPHIR_CALL_METHOD(&_1$$3, map, "valid", NULL, 0);
+				zephir_check_call_status();
+				if (!zend_is_true(&_1$$3)) {
+					break;
+				}
+				ZEPHIR_CALL_METHOD(&key$$3, map, "key", NULL, 0);
+				zephir_check_call_status();
+				ZEPHIR_CALL_METHOD(&value$$3, map, "current", NULL, 0);
+				zephir_check_call_status();
+					if (Z_TYPE_P(&value$$3) == IS_ARRAY) {
+						zephir_array_fetch(&_11$$8, arr, &key$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 119);
+						ZEPHIR_CALL_SELF(&_10$$8, "mprivatekeyencryption", &_5, 0, &_11$$8, &value$$3, keyArray);
+						zephir_check_call_status();
+						zephir_array_update_zval(arr, &key$$3, &_10$$8, PH_COPY | PH_SEPARATE);
+					} else {
+						zephir_array_fetch(&_13$$9, arr, &value$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 122);
+						ZEPHIR_CALL_METHOD(&_12$$9, &rsa, "privateencrypt", &_9, 29, &_13$$9);
+						zephir_check_call_status();
+						zephir_array_update_zval(arr, &value$$3, &_12$$9, PH_COPY | PH_SEPARATE);
+					}
+				ZEPHIR_CALL_METHOD(NULL, map, "next", NULL, 0);
+				zephir_check_call_status();
+			}
+		}
+		ZEPHIR_INIT_NVAR(&value$$3);
+		ZEPHIR_INIT_NVAR(&key$$3);
+	}
+	RETVAL_ZVAL(arr, 1, 0);
+	RETURN_MM();
+
+}
+
+PHP_METHOD(SePHP_Common_Utils, mPublicKeyDecryption) {
+
+	zend_string *_3$$3;
+	zend_ulong _2$$3;
+	zephir_method_globals *ZEPHIR_METHOD_GLOBALS_PTR = NULL;
+	zephir_fcall_cache_entry *_5 = NULL, *_9 = NULL;
+	zend_long ZEPHIR_LAST_CALL_STATUS;
+	zval *arr, arr_sub, *map, map_sub, *keyArray, keyArray_sub, rsa, key$$3, value$$3, *_0$$3, _1$$3, _4$$5, _6$$5, _7$$6, _8$$6, _10$$8, _11$$8, _12$$9, _13$$9;
+	zval *this_ptr = getThis();
+
+	ZVAL_UNDEF(&arr_sub);
+	ZVAL_UNDEF(&map_sub);
+	ZVAL_UNDEF(&keyArray_sub);
+	ZVAL_UNDEF(&rsa);
+	ZVAL_UNDEF(&key$$3);
+	ZVAL_UNDEF(&value$$3);
+	ZVAL_UNDEF(&_1$$3);
+	ZVAL_UNDEF(&_4$$5);
+	ZVAL_UNDEF(&_6$$5);
+	ZVAL_UNDEF(&_7$$6);
+	ZVAL_UNDEF(&_8$$6);
+	ZVAL_UNDEF(&_10$$8);
+	ZVAL_UNDEF(&_11$$8);
+	ZVAL_UNDEF(&_12$$9);
+	ZVAL_UNDEF(&_13$$9);
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 3, 0, &arr, &map, &keyArray);
+
+	ZEPHIR_SEPARATE_PARAM(arr);
+
+
+	ZEPHIR_INIT_VAR(&rsa);
+	object_init_ex(&rsa, sephp_common_rsa_ce);
+	ZEPHIR_CALL_METHOD(NULL, &rsa, "__construct", NULL, 28, keyArray);
+	zephir_check_call_status();
+	if (Z_TYPE_P(map) == IS_ARRAY) {
+		zephir_is_iterable(map, 0, "sephp/common/Utils.zep", 144);
+		if (Z_TYPE_P(map) == IS_ARRAY) {
+			ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(map), _2$$3, _3$$3, _0$$3)
+			{
+				ZEPHIR_INIT_NVAR(&key$$3);
+				if (_3$$3 != NULL) { 
+					ZVAL_STR_COPY(&key$$3, _3$$3);
+				} else {
+					ZVAL_LONG(&key$$3, _2$$3);
+				}
+				ZEPHIR_INIT_NVAR(&value$$3);
+				ZVAL_COPY(&value$$3, _0$$3);
+				if (Z_TYPE_P(&value$$3) == IS_ARRAY) {
+					zephir_array_fetch(&_6$$5, arr, &key$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 138);
+					ZEPHIR_CALL_SELF(&_4$$5, "mpublickeydecryption", &_5, 0, &_6$$5, &value$$3, keyArray);
+					zephir_check_call_status();
+					zephir_array_update_zval(arr, &key$$3, &_4$$5, PH_COPY | PH_SEPARATE);
+				} else {
+					zephir_array_fetch(&_8$$6, arr, &value$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 141);
+					ZEPHIR_CALL_METHOD(&_7$$6, &rsa, "publicdecrypt", &_9, 32, &_8$$6);
+					zephir_check_call_status();
+					zephir_array_update_zval(arr, &value$$3, &_7$$6, PH_COPY | PH_SEPARATE);
+				}
+			} ZEND_HASH_FOREACH_END();
+		} else {
+			ZEPHIR_CALL_METHOD(NULL, map, "rewind", NULL, 0);
+			zephir_check_call_status();
+			while (1) {
+				ZEPHIR_CALL_METHOD(&_1$$3, map, "valid", NULL, 0);
+				zephir_check_call_status();
+				if (!zend_is_true(&_1$$3)) {
+					break;
+				}
+				ZEPHIR_CALL_METHOD(&key$$3, map, "key", NULL, 0);
+				zephir_check_call_status();
+				ZEPHIR_CALL_METHOD(&value$$3, map, "current", NULL, 0);
+				zephir_check_call_status();
+					if (Z_TYPE_P(&value$$3) == IS_ARRAY) {
+						zephir_array_fetch(&_11$$8, arr, &key$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 138);
+						ZEPHIR_CALL_SELF(&_10$$8, "mpublickeydecryption", &_5, 0, &_11$$8, &value$$3, keyArray);
+						zephir_check_call_status();
+						zephir_array_update_zval(arr, &key$$3, &_10$$8, PH_COPY | PH_SEPARATE);
+					} else {
+						zephir_array_fetch(&_13$$9, arr, &value$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 141);
+						ZEPHIR_CALL_METHOD(&_12$$9, &rsa, "publicdecrypt", &_9, 32, &_13$$9);
+						zephir_check_call_status();
+						zephir_array_update_zval(arr, &value$$3, &_12$$9, PH_COPY | PH_SEPARATE);
+					}
+				ZEPHIR_CALL_METHOD(NULL, map, "next", NULL, 0);
+				zephir_check_call_status();
+			}
+		}
+		ZEPHIR_INIT_NVAR(&value$$3);
+		ZEPHIR_INIT_NVAR(&key$$3);
+	}
+	RETVAL_ZVAL(arr, 1, 0);
 	RETURN_MM();
 
 }
@@ -210,7 +860,7 @@ PHP_METHOD(SePHP_Common_Utils, randomCode) {
 	ZEPHIR_CALL_FUNCTION(&codeType, "str_split", NULL, 17, typeStr);
 	zephir_check_call_status();
 	if (Z_TYPE_P(&codeType) == IS_ARRAY) {
-		zephir_is_iterable(&codeType, 0, "sephp/common/Utils.zep", 62);
+		zephir_is_iterable(&codeType, 0, "sephp/common/Utils.zep", 168);
 		if (Z_TYPE_P(&codeType) == IS_ARRAY) {
 			ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(&codeType), _2$$3, _3$$3, _0$$3)
 			{
@@ -223,7 +873,7 @@ PHP_METHOD(SePHP_Common_Utils, randomCode) {
 				ZEPHIR_INIT_NVAR(&cType$$3);
 				ZVAL_COPY(&cType$$3, _0$$3);
 				if (zephir_array_isset(&codeArr, &cType$$3)) {
-					zephir_array_fetch(&_4$$5, &codeArr, &cType$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 59);
+					zephir_array_fetch(&_4$$5, &codeArr, &cType$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 165);
 					ZEPHIR_INIT_NVAR(&_5$$5);
 					ZEPHIR_CONCAT_VV(&_5$$5, &randomStr, &_4$$5);
 					ZEPHIR_CPY_WRT(&randomStr, &_5$$5);
@@ -243,7 +893,7 @@ PHP_METHOD(SePHP_Common_Utils, randomCode) {
 				ZEPHIR_CALL_METHOD(&cType$$3, &codeType, "current", NULL, 0);
 				zephir_check_call_status();
 					if (zephir_array_isset(&codeArr, &cType$$3)) {
-						zephir_array_fetch(&_6$$7, &codeArr, &cType$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 59);
+						zephir_array_fetch(&_6$$7, &codeArr, &cType$$3, PH_NOISY | PH_READONLY, "sephp/common/Utils.zep", 165);
 						ZEPHIR_INIT_NVAR(&_7$$7);
 						ZEPHIR_CONCAT_VV(&_7$$7, &randomStr, &_6$$7);
 						ZEPHIR_CPY_WRT(&randomStr, &_7$$7);
@@ -255,7 +905,7 @@ PHP_METHOD(SePHP_Common_Utils, randomCode) {
 		ZEPHIR_INIT_NVAR(&cType$$3);
 		ZEPHIR_INIT_NVAR(&_key$$3);
 	}
-	ZEPHIR_CALL_FUNCTION(&chars, "str_shuffle", NULL, 28, &randomStr);
+	ZEPHIR_CALL_FUNCTION(&chars, "str_shuffle", NULL, 33, &randomStr);
 	zephir_check_call_status();
 	number = 0;
 	if (ZEPHIR_GT_LONG(length, (zephir_fast_strlen_ev(&chars) - 1))) {
